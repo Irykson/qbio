@@ -4,13 +4,16 @@ import Foundation
     import FoundationNetworking
 #endif
 
-public struct qbio_lib  {
+public struct qbio_lib: ArtistDataSource {
     private var baseUrl = URLComponents(
         string: "https://www.theaudiodb.com/api/v1/json/1/search.php")!
 
-    func queryBioOfArtist(artist: String) -> String {
-        let queryUrl = (try? createQueryUrl(artist: artist).absoluteString) ?? "No bio found"
-        return queryUrl    
+    func getBio(artist: String) -> String {
+        guard let queryUrl = try? createQueryUrl(artist: artist) else {
+            return "No bio found"
+        }
+        
+        return executeQuery(query: queryUrl)
     }
 
     private func createQueryUrl(artist: String) throws -> URL {
@@ -24,6 +27,21 @@ public struct qbio_lib  {
         } else {
             throw QueryError.invalidQueryString
         }
+    }
+
+    private func executeQuery(query: URL) -> String {
+        let semaphore = DispatchSemaphore(value: 0)
+        var result = 0
+
+        let task = URLSession.shared.dataTask(with: query) {
+            (data, response, error) in
+            result = response!.hash
+            semaphore.signal()
+        }
+        task.resume()
+        semaphore.wait()
+
+        return String(result)
     }
 }
 
