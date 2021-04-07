@@ -12,7 +12,7 @@ public struct qbio_lib: ArtistDataSource {
         guard let queryUrl = try? createQueryUrl(artist: artist) else {
             return "No bio found"
         }
-        
+
         return executeQuery(query: queryUrl)
     }
 
@@ -31,20 +31,32 @@ public struct qbio_lib: ArtistDataSource {
 
     private func executeQuery(query: URL) -> String {
         let semaphore = DispatchSemaphore(value: 0)
-        var result = 0
+        var result = ""
 
-        let task = URLSession.shared.dataTask(with: query) {
-            (data, response, error) in
-            result = response!.hash
+        let task = URLSession.shared.dataTask(with: query) { (data, response, error) in
+            if let data = data {
+                let res = try! JSONDecoder().decode(ArtistQueryResponse.self, from: data)
+
+                result = res.artists.first!.strBiographyEN
+            }
             semaphore.signal()
         }
         task.resume()
         semaphore.wait()
 
-        return String(result)
+        return result
     }
 }
 
 enum QueryError: Error {
     case invalidQueryString
 }
+
+struct Artist : Codable {
+    let strBiographyEN: String
+}
+
+struct ArtistQueryResponse : Codable {
+    let artists: [Artist]
+}
+
