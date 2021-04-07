@@ -6,7 +6,7 @@ final class qbio_libTests: XCTestCase {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(qbio_lib().text, "Hello, World!")
+        XCTAssertEqual(qbio_lib().queryBioOfArtist(artist: "Rise Against"), "Hello, World!")
     }
 
     static var allTests = [

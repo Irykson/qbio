@@ -10,6 +10,9 @@ let package = Package(
         .library(
             name: "qbio-lib",
             targets: ["qbio-lib"]),
+        // .executable(
+        //     name: "qbio",
+        //     targets: ["qbio"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.

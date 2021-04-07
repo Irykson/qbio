@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug tests",
+            "program": "${workspaceFolder}/.build/x86_64-unknown-linux-gnu/debug/qbio-libPackageTests.xctest",
+            "preLaunchTask": "swift-build-tests"
+        }
+    ]
+}
