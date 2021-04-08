@@ -1,15 +1,23 @@
 import XCTest
+
 @testable import qbio_lib
 
 final class qbio_libTests: XCTestCase {
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(qbio_lib().getBio(artist: "Rise Against"), "Hello, World!")
+    var artistDataSource: ArtistDataSource!
+
+    override func setUp() {
+        artistDataSource = AudioDBArtistDataSource()
+    }
+
+    override func tearDown() {
+        artistDataSource = nil
+    }
+
+    func test_query_for_bio() {
+        XCTAssertGreaterThan(artistDataSource.getBio(artist: "Rise Against").count, 0)
     }
 
     static var allTests = [
-        ("testExample", testExample),
+        ("test_query_for_bio", test_query_for_bio)
     ]
 }
