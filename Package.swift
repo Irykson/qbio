@@ -10,9 +10,9 @@ let package = Package(
         .library(
             name: "qbio-lib",
             targets: ["qbio-lib"]),
-        // .executable(
-        //     name: "qbio",
-        //     targets: ["qbio"]),
+        .executable(
+            name: "qbio",
+            targets: ["qbio"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -26,6 +26,9 @@ let package = Package(
             dependencies: []),
         .testTarget(
             name: "qbio-libTests",
+            dependencies: ["qbio-lib"]),
+        .target(
+            name: "qbio",
             dependencies: ["qbio-lib"]),
     ]
 )

@@ -4,11 +4,13 @@ import Foundation
     import FoundationNetworking
 #endif
 
-struct AudioDBArtistDataSource: ArtistDataSource {
+public struct AudioDBArtistDataSource: ArtistDataSource {
     private var baseUrl = URLComponents(
         string: "https://www.theaudiodb.com/api/v1/json/1/search.php")!
 
-    func getBio(artist: String) -> String {
+    public init() {}
+
+    public func getBio(artist: String) -> String {
         guard let queryUrl = try? createQueryUrl(artist: artist) else {
             return "No bio found"
         }
@@ -16,7 +18,7 @@ struct AudioDBArtistDataSource: ArtistDataSource {
         return try! executeQuery(query: queryUrl)
     }
 
-    func getBioAsync(artist: String, resultHandler: @escaping (String?, Error?) -> Void) {
+    public func getBioAsync(artist: String, resultHandler: @escaping (String?, Error?) -> Void) {
         guard let queryUrl = try? createQueryUrl(artist: artist) else {
             resultHandler(nil, QueryError.invalidQueryString)
             return
@@ -44,8 +46,9 @@ struct AudioDBArtistDataSource: ArtistDataSource {
         var queryError: Error?
 
         executeQueryAsync(query: query) { bio, error in
-            guard let bio = bio else {
+            guard let bio = bio, error == nil else {
                 queryError = error
+                semaphore.signal()
                 return
             }
 
@@ -54,10 +57,7 @@ struct AudioDBArtistDataSource: ArtistDataSource {
         }
         semaphore.wait()
 
-        guard
-            let bio = result,
-            queryError == nil
-        else {
+        guard let bio = result, queryError == nil else {
             throw queryError!
         }
         return bio
@@ -66,12 +66,24 @@ struct AudioDBArtistDataSource: ArtistDataSource {
     private func executeQueryAsync(
         query: URL, resultHandler: @escaping (String?, Error?) -> Void
     ) {
-        URLSession.shared.dataTask(with: query) { data, response, error in
+        let session = URLSession.shared
+        session.dataTask(with: query) { data, response, error in
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                resultHandler(nil, QueryError.serviceError)
+                return
+            }
+
+            guard let data = data, error == nil else {
+                resultHandler(nil, error)
+                return
+            }
+
             do {
-                let res = try JSONDecoder().decode(ArtistQueryResponse.self, from: data!)
+                let res = try JSONDecoder().decode(ArtistQueryResponse.self, from: data)
                 resultHandler(res.artists.first!.strBiographyEN, nil)
+                return
             } catch {
-                resultHandler(nil, QueryError.invalidEndpoint)
+                resultHandler(nil, QueryError.serviceError)
             }
 
         }.resume()
@@ -80,7 +92,19 @@ struct AudioDBArtistDataSource: ArtistDataSource {
 
 enum QueryError: Error {
     case invalidQueryString
-    case invalidEndpoint
+    case serviceError
+}
+
+// TODO: Implement in console app?
+extension QueryError: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .invalidQueryString:
+            return NSLocalizedString("An invalid query value was passed. Please try another one.", comment: "")
+        case .serviceError:
+            return NSLocalizedString("An error in an external service occured. Please try later.", comment: "")
+        }
+    }
 }
 
 struct Artist: Codable {
