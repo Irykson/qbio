@@ -4,9 +4,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "qbio-lib",
+    name: "qbio",
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
+        .executable(
+            name: "qbio",
+            targets: ["qbio"]),
         .library(
             name: "qbio-lib",
             targets: ["qbio-lib"]),
@@ -18,6 +21,12 @@ let package = Package(
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
+        .target(
+            name: "qbio",
+            dependencies: ["qbio-lib"]),
+        .testTarget(
+            name: "qbioTests",
+            dependencies: ["qbio"]),
         .target(
             name: "qbio-lib",
             dependencies: []),
