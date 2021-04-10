@@ -1,6 +1,6 @@
-enum Arguments {
+enum Argument {
     case help
-    case artistValue
+    case artistValue(String)
     case unknown
 
     init(arg: String) {
@@ -8,15 +8,31 @@ enum Arguments {
         case "--help", "-h":
             self = .help
         default:
-            self = .unknown
+            if arg.starts(with: "--") {
+                self = .unknown
+            } else {
+                self = .artistValue(arg)
+            }
+        }
+    }
+
+    /// The value of an enum case.
+    /// Values are guaranteed for
+    /// `.artistValue`
+    var value: String? {
+        switch self {
+        case .artistValue(let value):
+            return value
+        default:
+            return nil
         }
     }
 }
 
 struct ArgumentParser {
-    var parsedArguments: [Arguments] {
+    var parsedArguments: [Argument] {
         CommandLine.arguments[1...].map { arg in
-            return Arguments.init(arg: arg)
+            return Argument.init(arg: arg)
         }
     }
 }

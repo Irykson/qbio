@@ -7,8 +7,17 @@
         {
             "type": "lldb",
             "request": "launch",
+            "name": "Debug qbio",
+            "program": "${workspaceFolder}/.build/x86_64-unknown-linux-gnu/debug/qbio",
+            "preLaunchTask": "swift-build",
+            "args": ["Rise Against"],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
             "name": "Debug tests",
-            "program": "${workspaceFolder}/.build/x86_64-unknown-linux-gnu/debug/qbio-libPackageTests.xctest",
+            "program": "${workspaceFolder}/.build/x86_64-unknown-linux-gnu/debug/qbioTests.xctest",
             "preLaunchTask": "swift-build-tests",
             "args": [],
             "cwd": "${workspaceFolder}"
