@@ -5,23 +5,28 @@ let artistDataSource = AudioDBArtistDataSource()
 executeArguments()
 
 func executeArguments() {
-    for arg in ArgumentParser().parsedArguments {
-        switch arg {
-        case .help:
-            printUsage()
-        case .artistValue:
-            // Value is guaranteed for .artistValue and can safely accessed
-            printBio(artist: arg.value!)
-        default:
-            continue
+    do {
+        for arg in ArgumentParser().parsedArguments {
+            switch arg {
+            case .help:
+                printUsage()
+            case .artistValue:
+                // Value is guaranteed for .artistValue and can safely accessed
+                try printBio(artist: arg.value!)
+            default:
+                continue
+            }
         }
+    } catch {
+        print("An error occured while executing the query. Please try again later.")
     }
 }
 
-func printBio(artist: String) {
+func printBio(artist: String) throws {
+    let bio = try artistDataSource.getBio(artist: artist)
     print(artist)
     print("--------------------")
-    print(artistDataSource.getBio(artist: artist))
+    print(bio)
 
     // print an empty line for better visual separation for multiple artists
     print()

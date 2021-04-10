@@ -10,12 +10,12 @@ public struct AudioDBArtistDataSource: ArtistDataSource {
 
     public init() {}
 
-    public func getBio(artist: String) -> String {
+    public func getBio(artist: String) throws -> String {
         guard let queryUrl = try? createQueryUrl(artist: artist) else {
-            return "No bio found"
+throw QueryError.invalidQueryString
         }
 
-        return try! executeQuery(query: queryUrl)
+        return try executeQuery(query: queryUrl)
     }
 
     public func getBioAsync(artist: String, resultHandler: @escaping (String?, Error?) -> Void) {
