@@ -24,6 +24,9 @@ let package = Package(
         .target(
             name: "qbio",
             dependencies: ["qbio-lib"]),
+        .testTarget(
+            name: "qbioTests",
+            dependencies: ["qbio"]),
         .target(
             name: "qbio-lib",
             dependencies: []),
