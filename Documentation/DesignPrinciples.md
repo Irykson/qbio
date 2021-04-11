@@ -83,7 +83,25 @@ This approach would have multiple drawbacks:
     - The user can think, that this simply sets a value. But in reality this operation is relatively expensive
 2. The setter could be implemented asynchronous. In this case the value read here would most definitely be invalid since it's not set yet.
 
-To summarize: The Uniform Access Principle is followed, where it's reasonable, e.g. simple / efficient computations. 
+To summarize: The Uniform Access Principle is followed, where it's reasonable, e.g. simple / efficient computations.
 
 ## Stable Abstraction Principle
-This principle promotes the Opened-Closed-Principle (the **O** in SOLID)
+
+This principle promotes the Opened-Closed-Principle (the **O** in SOLID) and it says, that a component should be as stable as it is abstract.
+In this context stable means, it should be open for extension and closed for modification.
+
+This means in other terms:
+
+-   The more stable a component is, the more abstract it should be.
+-   The more unstable a component is, the less abstract it should be.
+
+This is basically just what the Open-Closed-Principle says but a bit more concrete:
+A stable component should be abstract in the sense of an abstract class, an interface / protocol.
+One benefit of this is concrete approach is, that it can be measured. But the measurement is a bit controversial, since it's not really doing the reality justice. So these measurements should be understood as a rough guideline.
+
+### How to use it in Swift / in this project
+
+Swift takes this approach by design to an extreme. Swift promotes a Protocol-Oriented-Programming rather than an Object-Oriented-Programming.
+Protocols can be compared to interfaces in other languages but are more powerful than in most other languages.
+Swift offers a feature named `extension` which makes it easy to extend a protocol without modifying it (also possible for other types)
+So in this project we're working with a protocol `ArtistDataSource` which is used by the application and implement this in a struct.
