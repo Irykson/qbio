@@ -6,12 +6,12 @@ import Foundation
 
 extension AudioDBArtistDataSource {
     /// Executes a given URL / query synchronously
-    func executeQuery(query: URL) throws -> String {
+    func executeQuery(query: URL) throws -> Artist {
         // Use a semaphore make this function behave synchronous
         let semaphore = DispatchSemaphore(value: 0)
 
         // Needs to be declared outside the closure, since you cannot return outside the enclosing function
-        var result: String?
+        var result: Artist?
         var queryError: Error?
 
         executeQueryAsync(query: query) { bio, error in
@@ -33,13 +33,13 @@ extension AudioDBArtistDataSource {
     }
 
     func executeQueryAsync(
-        query: URL, resultHandler: @escaping (String?, Error?) -> Void
+        query: URL, resultHandler: @escaping (Artist?, Error?) -> Void
     ) {
         URLSession.shared.dataTask(with: query) { data, response, error in
             do {
                 let data = try validateHTTPResponse(data: data, response: response, error: error)
                 let artist = try parseDataResultToArtist(data: data)
-                resultHandler(artist.strBiographyEN, nil)
+                resultHandler(artist, nil)
             } catch {
                 resultHandler(nil, error)
             }

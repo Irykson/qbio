@@ -12,7 +12,7 @@ extension AudioDBArtistDataSource {
             throw QueryError.invalidQueryString
         }
 
-        return try executeQuery(query: url)
+        return try executeQuery(query: url).strBiographyEN
     }
 
     func getBioByNameAsync(artist: String, resultHandler: @escaping (String?, Error?) -> Void) {
@@ -21,7 +21,9 @@ extension AudioDBArtistDataSource {
             return
         }
 
-        executeQueryAsync(query: url, resultHandler: resultHandler)
+        executeQueryAsync(query: url) { artist, error in
+            resultHandler(artist?.strBiographyEN, error)
+        }
     }
 
     /// Creates a URL with search parameter with the given `artist`
