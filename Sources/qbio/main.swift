@@ -18,7 +18,7 @@ func executeArguments() {
             }
         }
     } catch {
-        print("An error occured while executing the query. Please try again later.")
+        print("An error occurred while executing the query. Please try again later.")
     }
 }
 
@@ -35,7 +35,7 @@ func printBio(artist: String) throws {
 func printUsage() {
     print("USAGE")
     print(
-        "\tqbio <artist(s) to query>  -- Values with whitespace needs to be surrounded by quoutes (\"). Multiple artists can be queried by separating with whitespace"
+        "\tqbio <artist(s) to query>  -- Values with whitespace needs to be surrounded by quotes (\"). Multiple artists can be queried by separating with whitespace"
     )
     print("OPTIONS")
     print("\t--help -h\tPrints this manual")
