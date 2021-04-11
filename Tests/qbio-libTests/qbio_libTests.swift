@@ -22,16 +22,20 @@ final class qbio_libTests: XCTestCase {
     }
 
     func test_query_throws_error_if_not_found_artist() {
-        var actualError: QueryError? = nil;
-        XCTAssertThrowsError(try artistDataSource.getBio(artist: "42 is the answer, not an artist")) { error in
-            actualError = error as? QueryError
+        var actualError: ServiceError? = nil
+        XCTAssertThrowsError(try artistDataSource.getBio(artist: "42 is the answer, not an artist"))
+        { error in
+            actualError = error as? ServiceError
         }
 
-        XCTAssertEqual(QueryError.artistNotFound, actualError)
+        XCTAssertEqual(ServiceError.artistNotFound, actualError)
     }
 
     static var allTests = [
         ("test_query_returns_bio", test_query_returns_bio),
-        ("test_query_throws_error_if_not_found_artist", test_query_throws_error_if_not_found_artist)
+        (
+            "test_query_throws_error_if_not_found_artist",
+            test_query_throws_error_if_not_found_artist
+        ),
     ]
 }
