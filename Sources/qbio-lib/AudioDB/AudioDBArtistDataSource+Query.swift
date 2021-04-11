@@ -2,7 +2,7 @@ import Foundation
 
 extension AudioDBArtistDataSource {
     // Define as a property instead of as an attribute within the struct. Otherwise this would potentially be modified at runtime
-    private let baseUrl: URLComponents {
+    private var baseUrl: URLComponents {
         URLComponents(
             string: "https://www.theaudiodb.com/api/v1/json/1/search.php")!
     }
