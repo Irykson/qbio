@@ -1,7 +1,8 @@
 import Foundation
 
 extension AudioDBArtistDataSource {
-    private var baseUrl: URLComponents {
+    // Define as a property instead of as an attribute within the struct. Otherwise this would potentially be modified at runtime
+    private let baseUrl: URLComponents {
         URLComponents(
             string: "https://www.theaudiodb.com/api/v1/json/1/search.php")!
     }
@@ -25,8 +26,9 @@ extension AudioDBArtistDataSource {
 
     /// Creates a URL with search parameter with the given `artist`
     private func createQueryUrl(artist: String) throws -> URL {
-        // create and use a copy to not modify the base url of this struct
+        // save copy of baseUrl since the computed property is read-only
         var baseUrlCopy = baseUrl
+
         let baseUrlItem = URLQueryItem(name: "s", value: artist)
         baseUrlCopy.queryItems = [baseUrlItem]
 
@@ -36,7 +38,6 @@ extension AudioDBArtistDataSource {
             throw QueryError.invalidQueryString
         }
     }
-
 }
 
 enum QueryError: Error {
